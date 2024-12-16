@@ -8,6 +8,7 @@ builder.Services
     .AddDbContext<ApplicationDbContext>(
         options => options.UseNpgsql("Host=127.0.0.1;Username=graphql_workshop;Password=secret"))
     .AddGraphQLServer()
+    .AddGlobalObjectIdentification()
     // This enables the mutation conventions to minimize boilerplate code.  Instead of manually creating payload
     // types, Hot Chocolate can generate these types for us automatically.
     .AddMutationConventions()
