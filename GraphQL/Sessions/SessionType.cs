@@ -1,6 +1,6 @@
 using ConferencePlanner.GraphQL.Data;
 
-namespace ConferencePlanner.GraphQL.Types;
+namespace ConferencePlanner.GraphQL.Sessions;
 
 [ObjectType<Session>]
 public static partial class SessionType
