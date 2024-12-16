@@ -15,6 +15,7 @@ public static class SpeakerQueries
         return await dbContext.Speakers.AsNoTracking().ToListAsync(cancellationToken);
     }
 
+    [NodeResolver] // Marks the node resolver for a Relay node type.  It will also set the GraphQL type of the `id` parameter to `ID`
     public static async Task<Speaker?> GetSpeakerAsync(
         int id,
         ISpeakerByIdDataLoader speakerByIdDataLoader,
