@@ -3,9 +3,9 @@ using GreenDonut.Selectors;
 using HotChocolate.Execution.Processing;
 using Microsoft.EntityFrameworkCore;
 
-namespace ConferencePlanner.GraphQL;
+namespace ConferencePlanner.GraphQL.Speakers;
 
-public static class Queries
+public static class SpeakerQueries
 {
     [Query]
     public static async Task<IEnumerable<Speaker>> GetSpeakersAsync(
