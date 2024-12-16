@@ -38,4 +38,26 @@ public static class SessionMutations
 
         return session;
     }
+
+    [Error<EndTimeInvalidException>]
+    [Error<SessionNotFoundException>]
+    public static async Task<Session> ScheduleSessionAsync(
+        ScheduleSessionInput input,
+        ApplicationDbContext dbContext,
+        CancellationToken cancellationToken)
+    {
+        if (input.EndTime < input.StartTime) throw new EndTimeInvalidException();
+
+        var session = await dbContext.Sessions.FindAsync([input.SessionId], cancellationToken);
+
+        if (session is null) throw new SessionNotFoundException();
+
+        session.TrackId = input.TrackId;
+        session.StartTime = input.StartTime;
+        session.EndTime = input.EndTime;
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return session;
+    }
 }
