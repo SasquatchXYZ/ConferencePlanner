@@ -1,0 +1,36 @@
+using ConferencePlanner.GraphQL.Data;
+using GreenDonut.Selectors;
+using HotChocolate.Execution.Processing;
+using Microsoft.EntityFrameworkCore;
+
+namespace ConferencePlanner.GraphQL.Sessions;
+
+[QueryType]
+public static class SessionQueries
+{
+    public static async Task<IEnumerable<Session>> GetSessionsAsync(
+        ApplicationDbContext dbContext,
+        CancellationToken cancellationToken)
+    {
+        return await dbContext.Sessions.AsNoTracking().ToListAsync(cancellationToken);
+    }
+
+    [NodeResolver]
+    public static async Task<Session?> GetSessionByIdAsync(
+        int id,
+        ISessionByIdDataLoader sessionByIdDataLoader,
+        ISelection selection,
+        CancellationToken cancellationToken)
+    {
+        return await sessionByIdDataLoader.Select(selection).LoadAsync(id, cancellationToken);
+    }
+
+    public static async Task<IEnumerable<Session>> GetSessionsByIdAsync(
+        [ID<Session>] int[] ids,
+        ISessionByIdDataLoader sessionByIdDataLoader,
+        ISelection selection,
+        CancellationToken cancellationToken)
+    {
+        return await sessionByIdDataLoader.Select(selection).LoadRequiredAsync(ids, cancellationToken);
+    }
+}

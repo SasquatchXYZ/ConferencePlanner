@@ -3,11 +3,11 @@ using GreenDonut.Selectors;
 using HotChocolate.Execution.Processing;
 using Microsoft.EntityFrameworkCore;
 
-namespace ConferencePlanner.GraphQL;
+namespace ConferencePlanner.GraphQL.Speakers;
 
-public static class Queries
+[QueryType]
+public static class SpeakerQueries
 {
-    [Query]
     public static async Task<IEnumerable<Speaker>> GetSpeakersAsync(
         ApplicationDbContext dbContext,
         CancellationToken cancellationToken)
@@ -15,13 +15,21 @@ public static class Queries
         return await dbContext.Speakers.AsNoTracking().ToListAsync(cancellationToken);
     }
 
-    [Query]
-    public static async Task<Speaker?> GetSpeakerAsync(
+    [NodeResolver] // Marks the node resolver for a Relay node type.  It will also set the GraphQL type of the `id` parameter to `ID`
+    public static async Task<Speaker?> GetSpeakerByIdAsync(
         int id,
         ISpeakerByIdDataLoader speakerByIdDataLoader,
         ISelection selection,
         CancellationToken cancellationToken)
     {
         return await speakerByIdDataLoader.Select(selection).LoadAsync(id, cancellationToken);
+    }
+
+    public static async Task<IEnumerable<Speaker>> GetSpeakersByIdAsync(
+        [ID<Speaker>] int[] ids,
+        ISpeakerByIdDataLoader speakerByIdDataLoader,
+        CancellationToken cancellationToken)
+    {
+        return await speakerByIdDataLoader.LoadRequiredAsync(ids, cancellationToken);
     }
 }

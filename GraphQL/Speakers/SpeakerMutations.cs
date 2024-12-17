@@ -1,12 +1,11 @@
 using ConferencePlanner.GraphQL.Data;
-using ConferencePlanner.GraphQL.MutationData;
 
-namespace ConferencePlanner.GraphQL;
+namespace ConferencePlanner.GraphQL.Speakers;
 
-public static class Mutations
+[MutationType]
+public static class SpeakerMutations
 {
-    [Mutation]
-    public static async Task<AddSpeakerPayload> AddSpeakerAsync(
+    public static async Task<Speaker> AddSpeakerAsync(
         AddSpeakerInput input,
         ApplicationDbContext dbContext,
         CancellationToken cancellationToken)
@@ -22,6 +21,6 @@ public static class Mutations
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return new AddSpeakerPayload(speaker);
+        return speaker;
     }
 }
