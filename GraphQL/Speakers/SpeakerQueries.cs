@@ -8,11 +8,10 @@ namespace ConferencePlanner.GraphQL.Speakers;
 [QueryType]
 public static class SpeakerQueries
 {
-    public static async Task<IEnumerable<Speaker>> GetSpeakersAsync(
-        ApplicationDbContext dbContext,
-        CancellationToken cancellationToken)
+    [UsePaging]
+    public static IQueryable<Speaker> GetSpeakers(ApplicationDbContext dbContext)
     {
-        return await dbContext.Speakers.AsNoTracking().ToListAsync(cancellationToken);
+        return dbContext.Speakers.AsNoTracking().OrderBy(speaker => speaker.Name).ThenBy(speaker => speaker.Id);
     }
 
     [NodeResolver] // Marks the node resolver for a Relay node type.  It will also set the GraphQL type of the `id` parameter to `ID`

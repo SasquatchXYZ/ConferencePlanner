@@ -8,11 +8,14 @@ namespace ConferencePlanner.GraphQL.Sessions;
 [QueryType]
 public static class SessionQueries
 {
-    public static async Task<IEnumerable<Session>> GetSessionsAsync(
-        ApplicationDbContext dbContext,
-        CancellationToken cancellationToken)
+    [UsePaging]
+    [UseFiltering]
+    [UseSorting]
+    public static IQueryable<Session> GetSessions(ApplicationDbContext dbContext)
     {
-        return await dbContext.Sessions.AsNoTracking().ToListAsync(cancellationToken);
+        // By default, the filter middleware would infer a filter type that exposes all the fields of the entity
+        // In our case, it would be better to be explicit by specifying exactly which fields our users can filter by.
+        return dbContext.Sessions.AsNoTracking().OrderBy(session => session.Title).ThenBy(session => session.Id);
     }
 
     [NodeResolver]
