@@ -8,11 +8,10 @@ namespace ConferencePlanner.GraphQL.Sessions;
 [QueryType]
 public static class SessionQueries
 {
-    public static async Task<IEnumerable<Session>> GetSessionsAsync(
-        ApplicationDbContext dbContext,
-        CancellationToken cancellationToken)
+    [UsePaging]
+    public static IQueryable<Session> GetSessions(ApplicationDbContext dbContext)
     {
-        return await dbContext.Sessions.AsNoTracking().ToListAsync(cancellationToken);
+        return dbContext.Sessions.AsNoTracking().OrderBy(session => session.Title).ThenBy(session => session.Id);
     }
 
     [NodeResolver]
