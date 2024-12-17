@@ -1,4 +1,5 @@
 using ConferencePlanner.GraphQL.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConferencePlanner.GraphQL.Attendees;
 
@@ -19,6 +20,24 @@ public static class AttendeeMutations
         };
 
         dbContext.Attendees.Add(attendee);
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return attendee;
+    }
+
+    public static async Task<Attendee> CheckInAttendeeAsync(
+        CheckInAttendeeInput input,
+        ApplicationDbContext dbContext,
+        CancellationToken cancellationToken)
+    {
+        var attendee = await dbContext.Attendees.FirstOrDefaultAsync(
+            attendee => attendee.Id == input.AttendeeId,
+            cancellationToken);
+
+        if (attendee is null) throw new AttendeeNotFoundException();
+
+        attendee.SessionsAttendees.Add(new SessionAttendee { SessionId = input.SessionId });
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
