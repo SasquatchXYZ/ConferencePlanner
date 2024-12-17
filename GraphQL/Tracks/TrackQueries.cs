@@ -8,11 +8,10 @@ namespace ConferencePlanner.GraphQL.Tracks;
 [QueryType]
 public static class TrackQueries
 {
-    public static async Task<IEnumerable<Track>> GetTracksAsync(
-        ApplicationDbContext dbContext,
-        CancellationToken cancellationToken)
+    [UsePaging]
+    public static IQueryable<Track> GetTracks(ApplicationDbContext dbContext)
     {
-        return await dbContext.Tracks.AsNoTracking().ToListAsync(cancellationToken);
+        return dbContext.Tracks.AsNoTracking().OrderBy(track => track.Name).ThenBy(track => track.Id);
     }
 
     [NodeResolver]
