@@ -12,6 +12,8 @@ builder.Services
     // This enables the mutation conventions to minimize boilerplate code.  Instead of manually creating payload
     // types, Hot Chocolate can generate these types for us automatically.
     .AddMutationConventions()
+    // Adds the cursor paging provider to the schema configuration that uses native keyset pagination
+    .AddDbContextCursorPagingProvider()
     // This registers all types in the assembly using a source generator (`HotChocolate.Types.Analyzers`)
     // The name of the `AddGraphQLTypes` method is based on the assembly name by default,
     // but can be changed using the `[Module]` attribute on the assembly.
