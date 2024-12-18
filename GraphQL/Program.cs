@@ -1,5 +1,6 @@
 using ConferencePlanner.GraphQL.Data;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,7 @@ builder.Services
     .AddPagingArguments()
     .AddFiltering()
     .AddSorting()
+    .AddRedisSubscriptions(_ => ConnectionMultiplexer.Connect("127.0.0.1:6379"))
     // This registers all types in the assembly using a source generator (`HotChocolate.Types.Analyzers`)
     // The name of the `AddGraphQLTypes` method is based on the assembly name by default,
     // but can be changed using the `[Module]` attribute on the assembly.
@@ -25,6 +27,7 @@ builder.Services
 
 var app = builder.Build();
 
+app.UseWebSockets();
 app.MapGraphQL();
 
 await app.RunWithGraphQLCommandsAsync(args);
